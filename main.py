@@ -9,7 +9,8 @@ import uvicorn
 from datetime import datetime
 import json
 from fastapi import WebSocketDisconnect
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # Import AI Core components
 from app.ai_core.llama_engine import LlamaEngine
@@ -36,7 +37,12 @@ from app.platform.voice_input_handler import VoiceInputHandler
 from app.voice.stt_service import STTService
 from app.voice.tts_service import TTSService
 
-# Initialize FastAPI app
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+# Initialize FastAPI app with your configurations
 app = FastAPI(
     title="AI Appointment Management System",
     description="AI-powered system for managing medical appointments",
@@ -50,27 +56,50 @@ async def log_requests(request, call_next):
     logger.info(f"Response: {response.status_code}")
     return response
 
-# Configure CORS
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your actual origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
-# Add these lines here - after CORS and before the rest of the code
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+# Get the absolute path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "app", "static")
 
-# Mount the static directory
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+# Add debug logging
+logger.info(f"Base Directory: {BASE_DIR}")
+logger.info(f"Static Directory: {STATIC_DIR}")
+logger.info(f"Index path: {os.path.join(STATIC_DIR, 'index.html')}")
 
-# Serve index.html at the root URL
+# Mount static files
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 @app.get("/")
-async def read_index():
-    return FileResponse('app/static/index.html')
+async def read_root():
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    try:
+        return FileResponse(
+            index_path,
+            media_type='text/html'
+        )
+    except Exception as e:
+        logger.error(f"Error serving index.html: {str(e)}")
+        return {"error": str(e)}
+
+@app.get("/test")
+async def test():
+    return {"message": "API is working"}
+
+# Add startup event
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting AI Appointment Management System")
+    # Log if index.html exists
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    logger.info(f"Index.html exists: {os.path.exists(index_path)}")
 
 
 # Configure logging

@@ -1,0 +1,37 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Django specific
+*.sqlite3
+
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.orig
+*.save
+
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+.env.local
+
