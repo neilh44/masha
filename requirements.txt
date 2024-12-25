@@ -1,0 +1,19 @@
+# Core dependencies
+Flask==2.3.0                  # Web framework for building the app
+Flask-OAuthlib==0.9.6          # OAuth support for Google Calendar login
+requests==2.28.2               # For making HTTP requests to APIs (e.g., Google Calendar, Deepgram)
+google-api-python-client==2.85.0  # Google API client to interact with Google Calendar
+google-auth==2.17.0            # Google authentication for OAuth2
+google-auth-oauthlib==0.7.1    # OAuthlib for authentication
+google-auth-httplib2==0.1.0    # Google authentication helper
+langchain==0.0.160             # For natural language processing, integrating Llama model
+groq                 # Groq integration for Llama 3-8B model
+deepgram-sdk          # Deepgram SDK for speech-to-text (STT) and text-to-speech (TTS)
+pydantic              # Data validation and settings management for models
+flask-cors              # Cross-origin resource sharing for the Flask app
+gunicorn               # WSGI HTTP Server for production deployment
+python-dotenv          # To load environment variables from .env files
+fastapi
+uvicorn
+PyJWT
+pytz
